@@ -2,7 +2,7 @@
 // Create Account form — validation + submission
 // ============================================================
 
-const API_URL = "http://localhost:8080/api/users/signup"; // adjust to match backend
+const API_URL = "http://localhost:8080/api/signup";// adjust to match backend
 
 const form = document.getElementById("signupForm");
 const submitBtn = document.getElementById("submitBtn");
