@@ -1,5 +1,6 @@
 package org.example.simplelogin.controller;
 
+import org.example.simplelogin.dto.LoginRequest;
 import org.example.simplelogin.dto.SignupRequest;
 import org.example.simplelogin.entity.User;
 import org.example.simplelogin.service.UserService;
@@ -41,6 +42,30 @@ public class UserController {
             Map<String, String> error = new HashMap<>();
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+        try {
+            User user = userService.loginUser(request);
+            Map<String, Object> response = new HashMap<>();
+
+            response.put("message", "Login successful");
+            response.put("userId", user.getId());
+            response.put("name", user.getName());
+            response.put("email", user.getEmail());
+            response.put("dob", user.getDob());
+            response.put("phone", user.getPhone());
+            response.put("gender", user.getGender());
+            response.put("country", user.getCountry());
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
         }
     }
 }

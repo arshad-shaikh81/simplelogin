@@ -362,3 +362,21 @@ select.valid {
     transition-duration: 0.001ms !important;
   }
 }
+/* Login page: switch to signup link */
+.switch-link {
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+
+.switch-link a {
+  color: var(--accent-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}

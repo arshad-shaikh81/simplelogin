@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Account</title>
+    <title>Log In</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
@@ -14,19 +14,12 @@
     <div class="card">
 
         <header class="card__header">
-            <p class="eyebrow">Step 1 of 1</p>
-            <h1>Create your account</h1>
-            <p class="subtitle">A few details and you're in. All fields are required.</p>
+            <p class="eyebrow">Welcome back</p>
+            <h1>Log in to your account</h1>
+            <p class="subtitle">Enter your email and password to continue.</p>
         </header>
 
-        <form id="signupForm" novalidate>
-
-            <!-- NAME -->
-            <div class="field">
-                <label for="name">Full name</label>
-                <input type="text" id="name" name="name" placeholder="e.g. Priya Sharma" autocomplete="name" />
-                <span class="error" id="name-error" role="alert"></span>
-            </div>
+        <form id="loginForm" novalidate>
 
             <!-- EMAIL -->
             <div class="field">
@@ -39,7 +32,7 @@
             <div class="field">
                 <label for="password">Password</label>
                 <div class="password-wrap">
-                    <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" />
+                    <input type="password" id="password" name="password" placeholder="Your password" autocomplete="current-password" />
                     <button type="button" class="toggle-visibility" id="togglePassword" aria-label="Show password">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
@@ -47,86 +40,21 @@
                 <span class="error" id="password-error" role="alert"></span>
             </div>
 
-            <div class="field-row">
-                <!-- DOB -->
-                <div class="field">
-                    <label for="dob">Date of birth</label>
-                    <input type="date" id="dob" name="dob" />
-                    <span class="hint" id="dob-hint"></span>
-                    <span class="error" id="dob-error" role="alert"></span>
-                </div>
-
-                <!-- PHONE -->
-                <div class="field">
-                    <label for="phone">Phone number</label>
-                    <input type="tel" id="phone" name="phone" placeholder="10-digit number" inputmode="numeric" maxlength="10" autocomplete="tel" />
-                    <span class="error" id="phone-error" role="alert"></span>
-                </div>
-            </div>
-
-            <!-- GENDER -->
-            <fieldset class="field">
-                <legend>Gender</legend>
-                <div class="radio-group" id="genderGroup">
-                    <label class="radio-option">
-                        <input type="radio" name="gender" value="male" />
-                        <span>Male</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="gender" value="female" />
-                        <span>Female</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="gender" value="other" />
-                        <span>Other</span>
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="gender" value="undisclosed" />
-                        <span>Prefer not to say</span>
-                    </label>
-                </div>
-                <span class="error" id="gender-error" role="alert"></span>
-            </fieldset>
-
-            <!-- COUNTRY -->
-            <div class="field">
-                <label for="country">Country</label>
-                <select id="country" name="country">
-                    <option value="" disabled selected>Select country</option>
-                    <option value="IN">India</option>
-                    <option value="US">United States</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="CA">Canada</option>
-                    <option value="AU">Australia</option>
-                    <option value="DE">Germany</option>
-                    <option value="FR">France</option>
-                    <option value="SG">Singapore</option>
-                    <option value="AE">United Arab Emirates</option>
-                    <option value="JP">Japan</option>
-                </select>
-                <span class="error" id="country-error" role="alert"></span>
-            </div>
-
-            <!-- TERMS -->
-            <div class="field field--checkbox">
-                <label class="checkbox-option">
-                    <input type="checkbox" id="terms" name="terms" />
-                    <span>I agree to the <a href="#" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="#" target="_blank" rel="noopener">Privacy Policy</a>.</span>
-                </label>
-                <span class="error" id="terms-error" role="alert"></span>
-            </div>
-
             <div class="form-status" id="formStatus" role="status"></div>
 
-            <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                <span class="btn-label">Create account</span>
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <span class="btn-label">Log in</span>
                 <span class="btn-spinner" aria-hidden="true"></span>
             </button>
+
+            <p class="switch-link">
+                Don't have an account? <a href="index.html">Create one</a>
+            </p>
 
         </form>
     </div>
 </main>
 
-<script src="script.js"></script>
+<script src="login.js"></script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package org.example.simplelogin.service;
 
+import org.example.simplelogin.dto.LoginRequest;
 import org.example.simplelogin.dto.SignupRequest;
 import org.example.simplelogin.entity.User;
 import org.example.simplelogin.repository.UserRepository;
@@ -48,5 +49,20 @@ public class UserService {
 
         // 4. Save to DB
         return userRepository.save(user);
+    }
+
+    public User loginUser(LoginRequest request) {
+
+        // 1. Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        // 2. Compare raw password against stored BCrypt hash
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password"); // same message on purpose
+        }
+
+        // 3. Credentials valid — return the user
+        return user;
     }
 }
