@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const API_BASE = "https://simplelogin-t22x.onrender.com/api";
 
+    // --- Login form elements ---
     const form = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
@@ -10,6 +11,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const formStatus = document.getElementById("formStatus");
     const submitBtn = document.getElementById("submitBtn");
     const togglePassword = document.getElementById("togglePassword");
+
+    // --- Forgot password elements ---
+    const forgotPasswordLink = document.getElementById("forgotPasswordLink");
+    const forgotPasswordPanel = document.getElementById("forgotPasswordPanel");
+    const backToLoginLink = document.getElementById("backToLoginLink");
+    const resetEmailInput = document.getElementById("resetEmail");
+    const resetEmailError = document.getElementById("resetEmail-error");
+    const resetStatus = document.getElementById("resetStatus");
+    const sendResetBtn = document.getElementById("sendResetBtn");
 
     // Show/hide password
     togglePassword.addEventListener("click", () => {
@@ -39,7 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-        // Basic client-side checks before hitting the server
         let hasError = false;
         if (!email) {
             emailError.textContent = "Email is required";
@@ -65,22 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (!response.ok) {
-                // Backend sends { "message": "Invalid email or password" } on 401
                 formStatus.textContent = data.message || "Login failed. Please try again.";
                 formStatus.classList.add("error");
                 return;
             }
 
-            // Success: backend returns { message, userId, name, email, dob, phone, gender, country }
             formStatus.textContent = `Welcome back, ${data.name}!`;
             formStatus.classList.add("success");
 
-            // Store basic user info for the session (temporary — replace with token-based auth later)
             sessionStorage.setItem("userId", data.userId);
             sessionStorage.setItem("userName", data.name);
             sessionStorage.setItem("userEmail", data.email);
 
-            // Redirect after a short pause so the success message is visible
             setTimeout(() => {
                 window.location.href = "dashboard.html";
             }, 800);
@@ -90,6 +95,67 @@ document.addEventListener("DOMContentLoaded", () => {
             formStatus.classList.add("error");
         } finally {
             setLoading(false);
+        }
+    });
+
+    // --- Forgot password panel toggle ---
+    forgotPasswordLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        form.hidden = true;
+        forgotPasswordPanel.hidden = false;
+        resetStatus.textContent = "";
+        resetStatus.className = "form-status";
+        resetEmailError.textContent = "";
+        resetEmailInput.value = emailInput.value.trim(); // prefill if they already typed it
+    });
+
+    backToLoginLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        forgotPasswordPanel.hidden = true;
+        form.hidden = false;
+    });
+
+    // --- Forgot password submit ---
+    sendResetBtn.addEventListener("click", async () => {
+        resetEmailError.textContent = "";
+        resetStatus.textContent = "";
+        resetStatus.className = "form-status";
+
+        const email = resetEmailInput.value.trim();
+        if (!email) {
+            resetEmailError.textContent = "Email is required";
+            resetEmailInput.classList.add("invalid");
+            return;
+        }
+        resetEmailInput.classList.remove("invalid");
+
+        sendResetBtn.disabled = true;
+        sendResetBtn.classList.add("loading");
+
+        try {
+            const response = await fetch(`${API_BASE}/forgot-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                resetStatus.textContent = data.message || "Something went wrong. Please try again.";
+                resetStatus.classList.add("error");
+                return;
+            }
+
+            resetStatus.textContent = data.message || "Temporary password sent to your email.";
+            resetStatus.classList.add("success");
+
+        } catch (err) {
+            resetStatus.textContent = "Could not reach the server. Please try again.";
+            resetStatus.classList.add("error");
+        } finally {
+            sendResetBtn.disabled = false;
+            sendResetBtn.classList.remove("loading");
         }
     });
 });

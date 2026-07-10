@@ -40,6 +40,10 @@
                 <span class="error" id="password-error" role="alert"></span>
             </div>
 
+            <p class="forgot-link">
+                <a href="#" id="forgotPasswordLink">Forgot password?</a>
+            </p>
+
             <div class="form-status" id="formStatus" role="status"></div>
 
             <button type="submit" class="submit-btn" id="submitBtn">
@@ -52,6 +56,30 @@
             </p>
 
         </form>
+
+        <!-- FORGOT PASSWORD PANEL (hidden by default) -->
+        <div id="forgotPasswordPanel" class="forgot-panel" hidden>
+            <h2>Reset your password</h2>
+            <p class="subtitle">Enter your email and we'll send you a temporary password.</p>
+
+            <div class="field">
+                <label for="resetEmail">Email address</label>
+                <input type="email" id="resetEmail" placeholder="you@example.com" />
+                <span class="error" id="resetEmail-error" role="alert"></span>
+            </div>
+
+            <div class="form-status" id="resetStatus" role="status"></div>
+
+            <button type="button" class="submit-btn" id="sendResetBtn">
+                <span class="btn-label">Send temporary password</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+
+            <p class="switch-link">
+                <a href="#" id="backToLoginLink">Back to login</a>
+            </p>
+        </div>
+
     </div>
 </main>
 

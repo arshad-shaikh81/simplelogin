@@ -491,3 +491,19 @@ select.valid {
     margin-left: 0;
   }
 }
+.forgot-link {
+    text-align: right;
+    margin-top: -8px;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+}
+.forgot-link a {
+    color: var(--accent);
+    text-decoration: none;
+}
+.forgot-link a:hover {
+    text-decoration: underline;
+}
+.forgot-panel h2 {
+    margin-bottom: 4px;
+}
