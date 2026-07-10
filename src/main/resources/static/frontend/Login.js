@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    const API_BASE = "http://localhost:8080/api";
+    const API_BASE = "https://simplelogin-t22x.onrender.com/api";
 
     const form = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
