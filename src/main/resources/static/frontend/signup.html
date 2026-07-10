@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="page">
+    <div class="card">
+
+        <header class="card__header">
+            <p class="eyebrow">Get started</p>
+            <h1>Create your account</h1>
+            <p class="subtitle">Fill in your details to sign up.</p>
+        </header>
+
+        <form id="signupForm" novalidate>
+
+            <!-- NAME -->
+            <div class="field">
+                <label for="name">Full name</label>
+                <input type="text" id="name" name="name" placeholder="Jane Doe" autocomplete="name" />
+                <span class="error" id="name-error" role="alert"></span>
+            </div>
+
+            <!-- EMAIL -->
+            <div class="field">
+                <label for="email">Email address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" />
+                <span class="error" id="email-error" role="alert"></span>
+            </div>
+
+            <!-- PASSWORD -->
+            <div class="field">
+                <label for="password">Password</label>
+                <div class="password-wrap">
+                    <input type="password" id="password" name="password" placeholder="At least 8 characters" autocomplete="new-password" />
+                    <button type="button" class="toggle-visibility" id="togglePassword" aria-label="Show password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <span class="error" id="password-error" role="alert"></span>
+            </div>
+
+            <!-- DOB -->
+            <div class="field">
+                <label for="dob">Date of birth</label>
+                <input type="date" id="dob" name="dob" />
+                <span class="hint">You must be at least 18 years old.</span>
+                <span class="error" id="dob-error" role="alert"></span>
+            </div>
+
+            <!-- PHONE -->
+            <div class="field">
+                <label for="phone">Phone number</label>
+                <input type="tel" id="phone" name="phone" placeholder="10-digit phone number" autocomplete="tel" inputmode="numeric" maxlength="10" />
+                <span class="error" id="phone-error" role="alert"></span>
+            </div>
+
+            <!-- GENDER (radio buttons) -->
+            <fieldset class="field" id="genderGroup">
+                <legend>Gender</legend>
+                <div class="radio-group">
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="Male" />
+                        Male
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="Female" />
+                        Female
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="Other" />
+                        Other
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="gender" value="Prefer not to say" />
+                        Prefer not to say
+                    </label>
+                </div>
+                <span class="error" id="gender-error" role="alert"></span>
+            </fieldset>
+
+            <!-- COUNTRY (dropdown) -->
+            <div class="field">
+                <label for="country">Country</label>
+                <select id="country" name="country">
+                    <option value="" disabled selected>Select Country</option>
+                    <option value="India">India</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                    <option value="Australia">Australia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Japan">Japan</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                </select>
+                <span class="error" id="country-error" role="alert"></span>
+            </div>
+
+            <!-- TERMS -->
+            <div class="field field--checkbox">
+                <label class="checkbox-option">
+                    <input type="checkbox" id="termsAccepted" name="termsAccepted" />
+                    <span>I agree to the Terms &amp; Conditions and Privacy Policy.</span>
+                </label>
+                <span class="error" id="termsAccepted-error" role="alert"></span>
+            </div>
+
+            <div class="form-status" id="formStatus" role="status"></div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                <span class="btn-label">Create account</span>
+                <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+
+            <p class="switch-link">
+                Already have an account? <a href="index.html">Log in</a>
+            </p>
+
+        </form>
+    </div>
+</main>
+
+<script src="signup.js"></script>
+</body>
+</html>

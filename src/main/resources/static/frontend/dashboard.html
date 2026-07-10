@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<main class="page">
+    <div class="card card--wide" id="dashboardCard">
+
+        <div class="dash-loading" id="dashLoading">Loading your profile...</div>
+
+        <div class="dash-content" id="dashContent" hidden>
+
+            <header class="dash-header">
+                <div class="avatar" id="avatar"></div>
+                <div>
+                    <p class="eyebrow">Account overview</p>
+                    <h1 id="dashName">—</h1>
+                    <p class="subtitle" id="dashEmail">—</p>
+                </div>
+                <button type="button" class="logout-btn" id="logoutBtn">Log out</button>
+            </header>
+
+            <div class="dash-grid">
+                <div class="dash-item">
+                    <span class="dash-label">Date of birth</span>
+                    <span class="dash-value" id="dashDob">—</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Phone</span>
+                    <span class="dash-value" id="dashPhone">—</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Gender</span>
+                    <span class="dash-value" id="dashGender">—</span>
+                </div>
+                <div class="dash-item">
+                    <span class="dash-label">Country</span>
+                    <span class="dash-value" id="dashCountry">—</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="dash-error" id="dashError" hidden>
+            <p>We couldn't load your profile. Please log in again.</p>
+            <a href="index.html" class="submit-btn">Go to login</a>
+        </div>
+
+    </div>
+</main>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

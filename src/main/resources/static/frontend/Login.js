@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Success: backend returns { message, userId, name, email }
+            // Success: backend returns { message, userId, name, email, dob, phone, gender, country }
             formStatus.textContent = `Welcome back, ${data.name}!`;
             formStatus.classList.add("success");
 
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Redirect after a short pause so the success message is visible
             setTimeout(() => {
-                window.location.href = "dashboard.html"; // change to whatever your post-login page is
+                window.location.href = "dashboard.html";
             }, 800);
 
         } catch (err) {

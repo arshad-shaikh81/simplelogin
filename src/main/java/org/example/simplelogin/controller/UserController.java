@@ -59,6 +59,7 @@ public class UserController {
             response.put("phone", user.getPhone());
             response.put("gender", user.getGender());
             response.put("country", user.getCountry());
+            response.put("lastLoginAt", user.getLastLoginAt());
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
@@ -66,6 +67,31 @@ public class UserController {
             Map<String, String> error = new HashMap<>();
             error.put("message", e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
+        }
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<?> getUser(@PathVariable Long id) {
+        try {
+            User user = userService.getUserById(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", user.getId());
+            response.put("name", user.getName());
+            response.put("email", user.getEmail());
+            response.put("dob", user.getDob());
+            response.put("phone", user.getPhone());
+            response.put("gender", user.getGender());
+            response.put("country", user.getCountry());
+            response.put("lastLoginAt", user.getLastLoginAt());
+            // password intentionally excluded
+
+            return ResponseEntity.ok(response);
+
+        } catch (IllegalArgumentException e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
     }
 }

@@ -2,6 +2,7 @@ package org.example.simplelogin.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +35,9 @@ public class User {
 
     @Column(name = "terms_accepted", nullable = false)
     private boolean termsAccepted;
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
 
     // ----- Constructors -----
     public User() {
@@ -110,5 +114,13 @@ public class User {
 
     public void setTermsAccepted(boolean termsAccepted) {
         this.termsAccepted = termsAccepted;
+    }
+
+    public LocalDateTime getLastLoginAt() {
+        return lastLoginAt;
+    }
+
+    public void setLastLoginAt(LocalDateTime lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }

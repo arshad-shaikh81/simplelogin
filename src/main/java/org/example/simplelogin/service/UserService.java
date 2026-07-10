@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 
 @Service
@@ -62,7 +63,16 @@ public class UserService {
             throw new IllegalArgumentException("Invalid email or password"); // same message on purpose
         }
 
-        // 3. Credentials valid — return the user
+        // 3. Record this login
+        user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        // 4. Credentials valid — return the user
         return user;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }
