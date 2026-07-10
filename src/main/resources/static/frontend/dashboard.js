@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const errorEl = document.getElementById("dashError");
     const logoutBtn = document.getElementById("logoutBtn");
 
+    const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+    const deleteModal = document.getElementById("deleteModal");
+    const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+
     const userId = sessionStorage.getItem("userId");
 
     if (!userId) {
@@ -63,5 +68,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     logoutBtn.addEventListener("click", () => {
         sessionStorage.clear();
         window.location.href = "index.html";
+    });
+
+    // --- Delete account flow ---
+    deleteAccountBtn.addEventListener("click", () => {
+        deleteModal.hidden = false;
+    });
+
+    cancelDeleteBtn.addEventListener("click", () => {
+        deleteModal.hidden = true;
+    });
+
+    confirmDeleteBtn.addEventListener("click", async () => {
+        confirmDeleteBtn.disabled = true;
+        confirmDeleteBtn.textContent = "Deleting...";
+
+        try {
+            const response = await fetch(`${API_BASE}/user/${userId}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                alert("Failed to delete account. Please try again.");
+                confirmDeleteBtn.disabled = false;
+                confirmDeleteBtn.textContent = "Yes, delete";
+                return;
+            }
+
+            sessionStorage.clear();
+            window.location.href = "index.html";
+
+        } catch (err) {
+            alert("Could not reach the server. Please try again.");
+            confirmDeleteBtn.disabled = false;
+            confirmDeleteBtn.textContent = "Yes, delete";
+        }
     });
 });

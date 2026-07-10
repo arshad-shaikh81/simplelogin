@@ -110,4 +110,10 @@ public class UserService {
         }
         return sb.toString();
     }
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
 }

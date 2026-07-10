@@ -46,6 +46,10 @@
                 </div>
             </div>
 
+            <div class="danger-zone">
+                <button type="button" class="delete-btn" id="deleteAccountBtn">Delete Account</button>
+            </div>
+
         </div>
 
         <div class="dash-error" id="dashError" hidden>
@@ -55,6 +59,18 @@
 
     </div>
 </main>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal" hidden>
+    <div class="modal-box">
+        <h2>Delete your account?</h2>
+        <p>This action cannot be undone. All your data will be permanently removed.</p>
+        <div class="modal-actions">
+            <button type="button" class="modal-cancel" id="cancelDeleteBtn">Cancel</button>
+            <button type="button" class="modal-confirm" id="confirmDeleteBtn">Yes, delete</button>
+        </div>
+    </div>
+</div>
 
 <script src="dashboard.js"></script>
 </body>

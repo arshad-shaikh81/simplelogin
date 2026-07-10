@@ -507,3 +507,77 @@ select.valid {
 .forgot-panel h2 {
     margin-bottom: 4px;
 }
+.danger-zone {
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e5e5;
+    text-align: right;
+}
+
+.delete-btn {
+    background: #fff;
+    color: #d92d20;
+    border: 1px solid #d92d20;
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    background: #fef3f2;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-overlay:not([hidden]) {
+    display: flex;
+}
+
+.modal-box {
+    background: #fff;
+    padding: 28px;
+    border-radius: 12px;
+    max-width: 360px;
+    text-align: center;
+}
+
+.modal-box h2 {
+    margin-bottom: 8px;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-cancel {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+}
+
+.modal-confirm {
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    background: #d92d20;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+}
+.modal-overlay[hidden] {
+    display: none;
+}
