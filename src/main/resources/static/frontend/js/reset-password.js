@@ -74,8 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             clearTimeout(wakeupTimer);
 
+            const data = await response.json().catch(() => ({}));
             if (!response.ok) {
-                formStatus.textContent = "Email not found.";
+                formStatus.textContent = data.message || "Something went wrong.";
                 formStatus.classList.add("error");
                 return;
             }
