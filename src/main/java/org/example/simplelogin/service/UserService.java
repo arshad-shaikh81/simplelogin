@@ -36,18 +36,70 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // ... registerUser, loginUser, getUserById stay exactly the same ...
+    public User registerUser(SignupRequest request) {
+
+        // 1. Check duplicate email
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new IllegalArgumentException("Email is already registered");
+        }
+
+        // 2. Check age >= 18 (this needs real date math, not just an annotation)
+        int age = Period.between(request.getDob(), LocalDate.now()).getYears();
+        if (age < 18) {
+            throw new IllegalArgumentException("You must be at least 18 years old");
+        }
+
+        // 3. Map DTO -> Entity
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // never save plain text
+        user.setDob(request.getDob());
+        user.setPhone(request.getPhone());
+        user.setGender(request.getGender());
+        user.setCountry(request.getCountry());
+        user.setTermsAccepted(request.isTermsAccepted());
+
+        // 4. Save to DB
+        return userRepository.save(user);
+    }
+
+    public User loginUser(LoginRequest request) {
+
+        // 1. Find user by email
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
+        // 2. Compare raw password against stored BCrypt hash
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid email or password"); // same message on purpose
+        }
+
+        // 3. Record this login
+        user.setLastLoginAt(LocalDateTime.now());
+        userRepository.save(user);
+
+        // 4. Credentials valid — return the user
+        return user;
+    }
+
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
 
     public void forgotPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No account found with this email"));
 
+        // Generate random 8-character temp password
         String tempPassword = generateTempPassword();
 
-        // Send the email FIRST — only touch the DB if it actually goes out.
+        // Send email FIRST — only touch the DB if it actually goes out.
         // Otherwise a failed send leaves the user locked out with a password they never received.
         sendResetEmail(email, tempPassword);
 
+        // Save hashed temp password to DB
         user.setPassword(passwordEncoder.encode(tempPassword));
         userRepository.save(user);
     }
@@ -80,5 +132,10 @@ public class UserService {
         return sb.toString();
     }
 
-    // ... deleteUser stays exactly the same ...
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        userRepository.deleteById(id);
+    }
 }
