@@ -4,7 +4,7 @@ A full-stack login/signup web application built with Spring Boot and vanilla Jav
 
 > Note: This project is unrelated to the email-alias service of the same name.
 
-## Live Demo
+## LiveDemo
 
 - **Frontend:** https://simplelogin-five.vercel.app
 - **Backend API:** https://simplelogin-t22x.onrender.com/api
