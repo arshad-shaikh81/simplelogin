@@ -7,10 +7,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitBtn = document.getElementById("submitBtn");
     const formStatus = document.getElementById("formStatus");
     const togglePassword = document.getElementById("togglePassword");
+    const toggleConfirmPassword = document.getElementById("toggleConfirmPassword");
 
     const nameInput = document.getElementById("name");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirmPassword");
+    const passwordStrength = document.getElementById("passwordStrength");
+    const passwordStrengthLabel = document.getElementById("passwordStrengthLabel");
     const dobInput = document.getElementById("dob");
     const phoneInput = document.getElementById("phone");
     const countryInput = document.getElementById("country");
@@ -26,6 +30,43 @@ document.addEventListener("DOMContentLoaded", () => {
         const isHidden = passwordInput.type === "password";
         passwordInput.type = isHidden ? "text" : "password";
         togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+    });
+
+    // Show/hide confirm password
+    toggleConfirmPassword.addEventListener("click", () => {
+        const isHidden = confirmPasswordInput.type === "password";
+        confirmPasswordInput.type = isHidden ? "text" : "password";
+        toggleConfirmPassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+    });
+
+    // Password strength: length + character variety
+    function getPasswordStrength(password) {
+        if (!password) return { level: "", label: "" };
+
+        let score = 0;
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score++;
+        if (/[a-z]/.test(password)) score++;
+        if (/[A-Z]/.test(password)) score++;
+        if (/[0-9]/.test(password)) score++;
+        if (/[^A-Za-z0-9]/.test(password)) score++;
+
+        if (score <= 2) return { level: "weak", label: "Weak" };
+        if (score <= 4) return { level: "medium", label: "Medium" };
+        return { level: "strong", label: "Strong" };
+    }
+
+    function updatePasswordStrength() {
+        const { level, label } = getPasswordStrength(passwordInput.value);
+        passwordStrength.dataset.level = level;
+        passwordStrengthLabel.textContent = label;
+    }
+
+    passwordInput.addEventListener("input", () => {
+        updatePasswordStrength();
+        // Re-check confirm password whenever the password itself changes
+        if (confirmPasswordInput.value) validateField("confirmPassword");
+        updateSubmitState();
     });
 
     // Phone: strip anything non-numeric as the user types, cap at 10 digits
@@ -80,6 +121,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     ? ""
                     : "Password must contain at least 8 characters";
 
+            case "confirmPassword":
+                if (!confirmPasswordInput.value) return "Please confirm your password";
+                return confirmPasswordInput.value === passwordInput.value
+                    ? ""
+                    : "Passwords do not match";
+
             case "dob": {
                 const value = dobInput.value;
                 if (!value) return "Date of birth is required";
@@ -112,7 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return message === "";
     }
 
-    const allFields = ["name", "email", "password", "dob", "phone", "gender", "country", "termsAccepted"];
+    const allFields = ["name", "email", "password", "confirmPassword", "dob", "phone", "gender", "country", "termsAccepted"];
 
     function validateAll() {
         let isValid = true;
@@ -131,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Real-time validation: validate on blur/change, re-check submit state on every input
-    ["name", "email", "password", "dob", "country"].forEach((field) => {
+    ["name", "email", "password", "confirmPassword", "dob", "country"].forEach((field) => {
         const el = document.getElementById(field);
         el.addEventListener("blur", () => validateField(field));
         el.addEventListener("input", updateSubmitState);
@@ -149,6 +196,27 @@ document.addEventListener("DOMContentLoaded", () => {
         validateField("termsAccepted");
         updateSubmitState();
     });
+
+    // Fully reset the form: native fields, custom validity states, and the strength meter
+    function resetSignupForm() {
+        form.reset();
+
+        allFields.forEach((field) => setError(field, ""));
+
+        [nameInput, emailInput, passwordInput, confirmPasswordInput, dobInput, phoneInput, countryInput].forEach((el) => {
+            el.classList.remove("invalid", "valid");
+        });
+
+        passwordStrength.dataset.level = "";
+        passwordStrengthLabel.textContent = "";
+
+        passwordInput.type = "password";
+        togglePassword.setAttribute("aria-label", "Show password");
+        confirmPasswordInput.type = "password";
+        toggleConfirmPassword.setAttribute("aria-label", "Show password");
+
+        updateSubmitState();
+    }
 
     function setLoading(isLoading) {
         submitBtn.disabled = isLoading || !isFormCurrentlyValid();
@@ -192,14 +260,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             // Success: backend returns { message, userId, name, email }
-            formStatus.textContent = `Welcome, ${data.name}! Redirecting to login...`;
-            formStatus.classList.add("success");
-
             sessionStorage.setItem("userId", data.userId);
+
+            resetSignupForm();
+
+            formStatus.textContent = `Account created successfully! Welcome, ${data.name}. Redirecting to login...`;
+            formStatus.classList.add("success");
 
             setTimeout(() => {
                 window.location.href = "index.html";
-            }, 1000);
+            }, 1800);
 
         } catch (err) {
             formStatus.textContent = "Could not reach the server. Please try again.";

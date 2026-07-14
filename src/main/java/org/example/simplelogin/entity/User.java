@@ -112,6 +112,7 @@ public class User {
         return termsAccepted;
     }
 
+
     public void setTermsAccepted(boolean termsAccepted) {
         this.termsAccepted = termsAccepted;
     }

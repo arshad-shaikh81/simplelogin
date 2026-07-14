@@ -44,7 +44,25 @@
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </div>
+                <div class="password-strength" id="passwordStrength" aria-hidden="true">
+                    <div class="password-strength__bar">
+                        <span class="password-strength__fill" id="passwordStrengthFill"></span>
+                    </div>
+                    <span class="password-strength__label" id="passwordStrengthLabel"></span>
+                </div>
                 <span class="error" id="password-error" role="alert"></span>
+            </div>
+
+            <!-- CONFIRM PASSWORD -->
+            <div class="field">
+                <label for="confirmPassword">Confirm password</label>
+                <div class="password-wrap">
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter your password" autocomplete="new-password" />
+                    <button type="button" class="toggle-visibility" id="toggleConfirmPassword" aria-label="Show password">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    </button>
+                </div>
+                <span class="error" id="confirmPassword-error" role="alert"></span>
             </div>
 
             <!-- DOB -->
