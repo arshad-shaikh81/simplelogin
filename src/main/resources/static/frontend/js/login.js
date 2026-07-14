@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
             sessionStorage.setItem("userEmail", data.email);
 
             setTimeout(() => {
-                window.location.href = "dashboard.html";
+                window.location.href = "/pages/dashboard.html";
             }, 800);
 
         } catch (err) {

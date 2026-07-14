@@ -276,7 +276,7 @@ document.addEventListener("DOMContentLoaded", () => {
             formStatus.classList.add("success");
 
             setTimeout(() => {
-                window.location.href = "index.html";
+                window.location.href = "/pages/index.html";
             }, 1800);
 
         } catch (err) {

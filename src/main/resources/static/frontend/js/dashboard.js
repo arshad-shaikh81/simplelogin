@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (!userId) {
         // No session — bounce back to login
-        window.location.href = "index.html";
+        window.location.href = "/pages/index.html";
         return;
     }
 
@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     logoutBtn.addEventListener("click", () => {
         sessionStorage.clear();
-        window.location.href = "index.html";
+        window.location.href = "/pages/index.html";
     });
 
     // --- Delete account flow ---
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             sessionStorage.clear();
-            window.location.href = "index.html";
+            window.location.href = "/pages/index.html";
 
         } catch (err) {
             alert("Could not reach the server. Please try again.");
