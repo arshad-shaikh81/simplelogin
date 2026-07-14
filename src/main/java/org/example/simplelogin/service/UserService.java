@@ -112,7 +112,7 @@ public class UserService {
         headers.setBearerAuth(resendApiKey);
 
         Map<String, Object> body = new HashMap<>();
-        body.put("from", "SimpleLogin <shekharshadulhak011@gmail.com>"); // swap once you verify your own domain
+        body.put("from", "SimpleLogin <onboarding@resend.dev>"); // swap once you verify your own domain
         body.put("to", new String[]{toEmail});
         body.put("subject", "SimpleLogin - Password Reset");
         body.put("text", "Your temporary password is: " + tempPassword +
