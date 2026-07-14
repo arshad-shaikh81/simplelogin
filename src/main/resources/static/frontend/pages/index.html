@@ -40,9 +40,18 @@
                 <span class="error" id="password-error" role="alert"></span>
             </div>
 
+            <!-- REMEMBER ME / FORGOT PASSWORD -->
+            <div class="field field--checkbox options-row">
+                <label class="checkbox-option">
+                    <input type="checkbox" id="rememberMe" name="rememberMe" />
+                    <span>Remember me</span>
+                </label>
+                <a href="/pages/reset-password.html" class="forgot-link">Forgot password?</a>
+            </div>
+
             <div class="form-status" id="formStatus" role="status"></div>
 
-            <button type="submit" class="submit-btn" id="submitBtn">
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>
                 <span class="btn-label">Log in</span>
                 <span class="btn-spinner" aria-hidden="true"></span>
             </button>
