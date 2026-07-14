@@ -232,6 +232,13 @@ document.addEventListener("DOMContentLoaded", () => {
         formStatus.className = "form-status";
         setLoading(true);
 
+        // Render's free tier spins down after inactivity — if the request is still
+        // pending after a few seconds, let the user know it's a cold start, not a hang.
+        const wakeupTimer = setTimeout(() => {
+            formStatus.textContent = "Waking up the server… this can take up to a minute on first use.";
+            formStatus.className = "form-status";
+        }, 3000);
+
         const payload = {
             name: nameInput.value.trim(),
             email: emailInput.value.trim(),
@@ -250,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 body: JSON.stringify(payload),
             });
 
+            clearTimeout(wakeupTimer);
             const data = await response.json();
 
             if (!response.ok) {
@@ -272,6 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1800);
 
         } catch (err) {
+            clearTimeout(wakeupTimer);
             formStatus.textContent = "Could not reach the server. Please try again.";
             formStatus.classList.add("error");
         } finally {
