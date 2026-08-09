@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Success: backend returns { message, userId, name, email }
             sessionStorage.setItem("userId", data.userId);
-
+            sessionStorage.setItem("justSignedUpEmail", payload.email);
             resetSignupForm();
 
             formStatus.textContent = `Account created successfully! Welcome, ${data.name}. Redirecting to login...`;

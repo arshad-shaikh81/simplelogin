@@ -6,32 +6,29 @@ import org.example.simplelogin.entity.User;
 import org.example.simplelogin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final JavaMailSender mailSender;
 
-    @Value("${resend.api.key}")
-    private String resendApiKey;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mailSender = mailSender;
     }
 
     public User registerUser(SignupRequest request) {
@@ -93,21 +90,14 @@ public class UserService {
     }
 
     private void sendResetEmail(String toEmail, String tempPassword) {
-        String url = "https://api.resend.com/emails";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(resendApiKey);
-
-        Map<String, Object> body = new HashMap<>();
-        body.put("from", "SimpleLogin <onboarding@resend.dev>"); // swap once you verify your own domain
-        body.put("to", new String[]{toEmail});
-        body.put("subject", "SimpleLogin - Password Reset");
-        body.put("text", "Your temporary password is: " + tempPassword +
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("SimpleLogin - Password Reset");
+        message.setText("Your temporary password is: " + tempPassword +
                 "\n\nPlease log in with this password. You can change it later from your account.");
 
-        HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
-        restTemplate.postForEntity(url, request, String.class);
+        mailSender.send(message);
     }
 
     private String generateTempPassword() {

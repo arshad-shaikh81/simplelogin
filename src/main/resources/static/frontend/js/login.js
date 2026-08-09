@@ -20,11 +20,17 @@ document.addEventListener("DOMContentLoaded", () => {
         togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
     });
 
-    // ---- Remember Me: prefill email on load ----
-    const rememberedEmail = localStorage.getItem(REMEMBER_KEY);
-    if (rememberedEmail) {
-        emailInput.value = rememberedEmail;
-        rememberMeInput.checked = true;
+    // ---- Prefill email: prioritize a just-created signup account over an old "remembered" one ----
+    const justSignedUpEmail = sessionStorage.getItem("justSignedUpEmail");
+    if (justSignedUpEmail) {
+        emailInput.value = justSignedUpEmail;
+        sessionStorage.removeItem("justSignedUpEmail"); // only applies once
+    } else {
+        const rememberedEmail = localStorage.getItem(REMEMBER_KEY);
+        if (rememberedEmail) {
+            emailInput.value = rememberedEmail;
+            rememberMeInput.checked = true;
+        }
     }
 
     // ---- Validation ----
