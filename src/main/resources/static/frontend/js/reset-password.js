@@ -11,14 +11,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const tempPasswordResult = document.getElementById("tempPasswordResult");
     const tempPasswordInput = document.getElementById("tempPassword");
     const copyTempPasswordBtn = document.getElementById("copyTempPassword");
+    const iconCopy = copyTempPasswordBtn.querySelector(".icon-copy");
+    const iconCheck = copyTempPasswordBtn.querySelector(".icon-check");
+    let copyResetTimer;
 
     copyTempPasswordBtn.addEventListener("click", async () => {
         try {
             await navigator.clipboard.writeText(tempPasswordInput.value);
-            copyTempPasswordBtn.setAttribute("aria-label", "Copied!");
         } catch (err) {
+            // Fallback for browsers/contexts where clipboard API is unavailable
             tempPasswordInput.select();
+            document.execCommand("copy");
         }
+
+        // Visual feedback: swap icon + trigger pop animation
+        clearTimeout(copyResetTimer);
+        copyTempPasswordBtn.classList.add("copied");
+        iconCopy.hidden = true;
+        iconCheck.hidden = false;
+        copyTempPasswordBtn.setAttribute("aria-label", "Copied!");
+
+        copyResetTimer = setTimeout(() => {
+            copyTempPasswordBtn.classList.remove("copied");
+            iconCopy.hidden = false;
+            iconCheck.hidden = true;
+            copyTempPasswordBtn.setAttribute("aria-label", "Copy password");
+        }, 1500);
     });
 
     // ---- Validation ----
