@@ -91,7 +91,7 @@ public class UserService {
 
     private void sendResetEmail(String toEmail, String tempPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromEmail);
+        message.setFrom("SimpleLogin <" + fromEmail + ">");
         message.setTo(toEmail);
         message.setSubject("SimpleLogin - Password Reset");
         message.setText("Your temporary password is: " + tempPassword +
