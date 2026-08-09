@@ -54,10 +54,6 @@ public class UserController {
             response.put("userId", user.getId());
             response.put("name", user.getName());
             response.put("email", user.getEmail());
-            response.put("dob", user.getDob());
-            response.put("phone", user.getPhone());
-            response.put("gender", user.getGender());
-            response.put("country", user.getCountry());
             response.put("lastLoginAt", user.getLastLoginAt());
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -78,10 +74,6 @@ public class UserController {
             response.put("userId", user.getId());
             response.put("name", user.getName());
             response.put("email", user.getEmail());
-            response.put("dob", user.getDob());
-            response.put("phone", user.getPhone());
-            response.put("gender", user.getGender());
-            response.put("country", user.getCountry());
             response.put("lastLoginAt", user.getLastLoginAt());
             // password intentionally excluded
 

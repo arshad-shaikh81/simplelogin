@@ -16,8 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const passwordStrengthLabel = document.getElementById("passwordStrengthLabel");
     const termsInput = document.getElementById("termsAccepted");
 
-
-
     // Show/hide password
     togglePassword.addEventListener("click", () => {
         const isHidden = passwordInput.type === "password";
@@ -62,17 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
         updateSubmitState();
     });
 
-
     function setError(field, message) {
         const errorEl = document.getElementById(field + "-error");
         if (errorEl) errorEl.textContent = message;
 
-        if (field === "gender") {
-            genderGroup.classList.toggle("invalid", !!message);
-        } else {
-            const inputEl = document.getElementById(field);
-            if (inputEl) inputEl.classList.toggle("invalid", !!message);
-        }
+        const inputEl = document.getElementById(field);
+        if (inputEl) inputEl.classList.toggle("invalid", !!message);
     }
 
     // Returns "" (valid) or an error message for a single field
@@ -149,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         allFields.forEach((field) => setError(field, ""));
 
-        [nameInput, emailInput, passwordInput, confirmPasswordInput, dobInput, phoneInput, countryInput].forEach((el) => {
+        [nameInput, emailInput, passwordInput, confirmPasswordInput].forEach((el) => {
             el.classList.remove("invalid", "valid");
         });
 
@@ -203,8 +196,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json();
 
             if (!response.ok) {
-                // Backend sends { "message": "..." } on 400 (e.g. duplicate email, under-18)
-                formStatus.textContent = data.message || "Sign up failed. Please try again.";
+                // Backend sends { "message": "..." } on 400 (e.g. duplicate email),
+                // or a map of per-field errors from bean validation.
+                formStatus.textContent = data.message || Object.values(data)[0] || "Sign up failed. Please try again.";
                 formStatus.classList.add("error");
                 return;
             }

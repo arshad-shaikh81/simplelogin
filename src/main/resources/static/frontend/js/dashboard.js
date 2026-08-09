@@ -35,12 +35,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             .join("");
     }
 
-    function formatDob(dobString) {
-        const d = new Date(dobString);
-        if (isNaN(d.getTime())) return dobString;
-        return d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
-    }
-
     try {
         const response = await fetch(`${API_BASE}/user/${userId}`);
         const data = await response.json();
@@ -53,10 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById("avatar").textContent = initials(data.name || "?");
         document.getElementById("dashName").textContent = data.name;
         document.getElementById("dashEmail").textContent = data.email;
-        document.getElementById("dashDob").textContent = formatDob(data.dob);
-        document.getElementById("dashPhone").textContent = data.phone;
-        document.getElementById("dashGender").textContent = data.gender;
-        document.getElementById("dashCountry").textContent = data.country;
 
         loadingEl.hidden = true;
         contentEl.hidden = false;
