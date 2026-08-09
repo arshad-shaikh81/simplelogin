@@ -8,6 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const formStatus = document.getElementById("formStatus");
     const submitBtn = document.getElementById("submitBtn");
 
+    const tempPasswordResult = document.getElementById("tempPasswordResult");
+    const tempPasswordInput = document.getElementById("tempPassword");
+    const copyTempPasswordBtn = document.getElementById("copyTempPassword");
+
+    copyTempPasswordBtn.addEventListener("click", async () => {
+        try {
+            await navigator.clipboard.writeText(tempPasswordInput.value);
+            copyTempPasswordBtn.setAttribute("aria-label", "Copied!");
+        } catch (err) {
+            tempPasswordInput.select();
+        }
+    });
+
     // ---- Validation ----
     function setError(message) {
         emailError.textContent = message;
@@ -81,10 +94,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            formStatus.textContent = "Password reset link has been sent.";
-            formStatus.classList.add("success");
-            form.reset();
-            submitBtn.disabled = true;
+            // Show the generated temp password directly on the page — no email involved.
+            form.hidden = true;
+            formStatus.textContent = "";
+            tempPasswordInput.value = data.tempPassword;
+            tempPasswordResult.hidden = false;
 
         } catch (err) {
             clearTimeout(wakeupTimer);

@@ -5,9 +5,6 @@ import org.example.simplelogin.dto.SignupRequest;
 import org.example.simplelogin.entity.User;
 import org.example.simplelogin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +16,11 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JavaMailSender mailSender;
-
-    @Value("${spring.mail.username}")
-    private String fromEmail;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JavaMailSender mailSender) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.mailSender = mailSender;
     }
 
     public User registerUser(SignupRequest request) {
@@ -73,31 +65,18 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
-    public void forgotPassword(String email) {
+    // No email involved: generates a temp password, saves its hash, and hands
+    // the plain-text value straight back to the controller to show on-screen.
+    public String forgotPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No account found with this email"));
 
-        // Generate random 8-character temp password
         String tempPassword = generateTempPassword();
 
-        // Send email FIRST — only touch the DB if it actually goes out.
-        // Otherwise a failed send leaves the user locked out with a password they never received.
-        sendResetEmail(email, tempPassword);
-
-        // Save hashed temp password to DB
         user.setPassword(passwordEncoder.encode(tempPassword));
         userRepository.save(user);
-    }
 
-    private void sendResetEmail(String toEmail, String tempPassword) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("SimpleLogin <" + fromEmail + ">");
-        message.setTo(toEmail);
-        message.setSubject("SimpleLogin - Password Reset");
-        message.setText("Your temporary password is: " + tempPassword +
-                "\n\nPlease log in with this password. You can change it later from your account.");
-
-        mailSender.send(message);
+        return tempPassword;
     }
 
     private String generateTempPassword() {

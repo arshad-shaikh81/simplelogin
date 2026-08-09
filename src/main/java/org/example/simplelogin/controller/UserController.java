@@ -90,10 +90,11 @@ public class UserController {
     public ResponseEntity<?> forgotPassword(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
-            userService.forgotPassword(email);
+            String tempPassword = userService.forgotPassword(email);
 
             Map<String, String> response = new HashMap<>();
-            response.put("message", "A temporary password has been sent to your email");
+            response.put("message", "Temporary password generated successfully");
+            response.put("tempPassword", tempPassword);
             return ResponseEntity.ok(response);
 
         } catch (IllegalArgumentException e) {
