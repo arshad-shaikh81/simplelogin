@@ -727,3 +727,6 @@ select.valid {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+.toggle-visibility svg[hidden] {
+  display: none;
+}
