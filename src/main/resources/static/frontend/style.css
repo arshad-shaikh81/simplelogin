@@ -657,16 +657,37 @@ select.valid {
 .modal-overlay[hidden] {
   display: none;
 }
-/* --- Copy button feedback animation --- */
-.toggle-visibility {
+/* --- Password input wrapper: button sits INSIDE the input, right-aligned --- */
+.password-wrap {
   position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrap input {
+  width: 100%;
+  padding-right: 40px; /* room for the icon so text doesn't overlap it */
+  box-sizing: border-box;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #6b7280; /* neutral gray, adjust to match your theme */
   transition: color 0.2s ease;
 }
 
 .toggle-visibility svg {
+  display: block;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
 }
 
