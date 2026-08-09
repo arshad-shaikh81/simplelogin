@@ -12,9 +12,6 @@ const fields = {
   name: document.getElementById("name"),
   email: document.getElementById("email"),
   password: document.getElementById("password"),
-  dob: document.getElementById("dob"),
-  phone: document.getElementById("phone"),
-  country: document.getElementById("country"),
   terms: document.getElementById("terms"),
 };
 
@@ -25,30 +22,15 @@ const errorEls = {
   name: document.getElementById("name-error"),
   email: document.getElementById("email-error"),
   password: document.getElementById("password-error"),
-  dob: document.getElementById("dob-error"),
-  phone: document.getElementById("phone-error"),
-  gender: document.getElementById("gender-error"),
-  country: document.getElementById("country-error"),
   terms: document.getElementById("terms-error"),
 };
-
-const dobHint = document.getElementById("dob-hint");
 
 const ERROR_MESSAGES = {
   name: "Name is required",
   email: "Enter a valid email address",
   password: "Password must contain at least 8 characters",
-  dob: "You must be at least 18 years old",
-  dobRequired: "Date of birth is required",
-  phone: "Enter a valid 10-digit phone number",
-  gender: "Please select your gender",
-  country: "Please select your country",
   terms: "You must accept the Terms & Conditions",
 };
-
-// Restrict DOB picker: no future dates
-fields.dob.max = new Date().toISOString().split("T")[0];
-
 // ------------------------------------------------------------
 // Individual field validators — each returns true/false and
 // updates its own error message + styling.
@@ -86,63 +68,6 @@ function validatePassword() {
   return setFieldState(fields.password, errorEls.password, isValid, ERROR_MESSAGES.password);
 }
 
-function calculateAge(dobString) {
-  const dob = new Date(dobString);
-  const today = new Date();
-  let age = today.getFullYear() - dob.getFullYear();
-  const monthDiff = today.getMonth() - dob.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-    age--;
-  }
-  return age;
-}
-
-function validateDob() {
-  const value = fields.dob.value;
-
-  if (!value) {
-    dobHint.textContent = "";
-    return setFieldState(fields.dob, errorEls.dob, false, ERROR_MESSAGES.dobRequired);
-  }
-
-  const selected = new Date(value);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  if (selected > today) {
-    dobHint.textContent = "";
-    return setFieldState(fields.dob, errorEls.dob, false, "Future dates are not allowed");
-  }
-
-  const age = calculateAge(value);
-  const isValid = age >= 18;
-
-  dobHint.textContent = isValid
-    ? `${selected.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })} · Age ${age}`
-    : "";
-
-  return setFieldState(fields.dob, errorEls.dob, isValid, ERROR_MESSAGES.dob);
-}
-
-function validatePhone() {
-  const value = fields.phone.value.trim();
-  const isValid = /^\d{10}$/.test(value);
-  return setFieldState(fields.phone, errorEls.phone, isValid, ERROR_MESSAGES.phone);
-}
-
-function validateGender() {
-  const isValid = Array.from(genderRadios).some((r) => r.checked);
-  genderGroup.classList.toggle("invalid", !isValid);
-  errorEls.gender.textContent = isValid ? "" : ERROR_MESSAGES.gender;
-  return isValid;
-}
-
-function validateCountry() {
-  const value = fields.country.value;
-  const isValid = value !== "";
-  return setFieldState(fields.country, errorEls.country, isValid, ERROR_MESSAGES.country);
-}
-
 function validateTerms() {
   const isValid = fields.terms.checked;
   errorEls.terms.textContent = isValid ? "" : ERROR_MESSAGES.terms;
@@ -154,10 +79,6 @@ function validateAll() {
     validateName(),
     validateEmail(),
     validatePassword(),
-    validateDob(),
-    validatePhone(),
-    validateGender(),
-    validateCountry(),
     validateTerms(),
   ];
   return results.every(Boolean);
@@ -167,13 +88,9 @@ function updateSubmitState() {
   const nameOk = fields.name.value.trim().length > 0;
   const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim());
   const passwordOk = fields.password.value.length >= 8;
-  const dobOk = fields.dob.value && calculateAge(fields.dob.value) >= 18 && new Date(fields.dob.value) <= new Date();
-  const phoneOk = /^\d{10}$/.test(fields.phone.value.trim());
-  const genderOk = Array.from(genderRadios).some((r) => r.checked);
-  const countryOk = fields.country.value !== "";
   const termsOk = fields.terms.checked;
 
-  const allOk = nameOk && emailOk && passwordOk && dobOk && phoneOk && genderOk && countryOk && termsOk;
+  const allOk = nameOk && emailOk && passwordOk && termsOk;
   submitBtn.disabled = !allOk;
 }
 
@@ -184,20 +101,7 @@ function updateSubmitState() {
 fields.name.addEventListener("input", () => { validateName(); updateSubmitState(); });
 fields.email.addEventListener("input", () => { validateEmail(); updateSubmitState(); });
 fields.password.addEventListener("input", () => { validatePassword(); updateSubmitState(); });
-fields.dob.addEventListener("change", () => { validateDob(); updateSubmitState(); });
-fields.country.addEventListener("change", () => { validateCountry(); updateSubmitState(); });
 fields.terms.addEventListener("change", () => { validateTerms(); updateSubmitState(); });
-
-genderRadios.forEach((radio) => {
-  radio.addEventListener("change", () => { validateGender(); updateSubmitState(); });
-});
-
-// Phone: strip non-digits as the user types, cap at 10
-fields.phone.addEventListener("input", () => {
-  fields.phone.value = fields.phone.value.replace(/\D/g, "").slice(0, 10);
-  validatePhone();
-  updateSubmitState();
-});
 
 // Password show/hide toggle
 const togglePasswordBtn = document.getElementById("togglePassword");
@@ -229,10 +133,6 @@ form.addEventListener("submit", async (e) => {
     name: fields.name.value.trim(),
     email: fields.email.value.trim(),
     password: fields.password.value,
-    dob: fields.dob.value,
-    phone: fields.phone.value.trim(),
-    gender: selectedGender,
-    country: fields.country.value,
     termsAccepted: fields.terms.checked,
   };
 
