@@ -12,10 +12,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
     const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
 
-    const userId = sessionStorage.getItem("userId");
+    const TOKEN_KEY = "authToken";
 
-    if (!userId) {
-        // No session — bounce back to login
+    // Token may live in localStorage (Remember me was checked) or
+    // sessionStorage (a plain, tab-only session) — check both.
+    const token = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+
+    function getUserIdFromToken(t) {
+        try {
+            const payload = JSON.parse(atob(t.split(".")[1]));
+            return payload.sub || null;
+        } catch {
+            return null;
+        }
+    }
+
+    function isTokenExpired(t) {
+        try {
+            const payload = JSON.parse(atob(t.split(".")[1]));
+            if (!payload.exp) return false;
+            return Date.now() >= payload.exp * 1000;
+        } catch {
+            return true;
+        }
+    }
+
+    const userId = token ? getUserIdFromToken(token) : null;
+
+    if (!token || !userId || isTokenExpired(token)) {
+        // No valid session — clear any stale bits and bounce back to login
+        localStorage.removeItem(TOKEN_KEY);
+        sessionStorage.removeItem(TOKEN_KEY);
         window.location.href = "/pages/index.html";
         return;
     }
@@ -36,7 +63,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        const response = await fetch(`${API_BASE}/user/${userId}`);
+        const response = await fetch(`${API_BASE}/user/${userId}`, {
+            headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        if (response.status === 401 || response.status === 403) {
+            // Token rejected by the server (expired/invalid/not-yours) — force re-login
+            localStorage.removeItem(TOKEN_KEY);
+            sessionStorage.removeItem(TOKEN_KEY);
+            window.location.href = "/pages/index.html";
+            return;
+        }
+
         const data = await response.json();
 
         if (!response.ok) {
@@ -56,7 +94,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     logoutBtn.addEventListener("click", () => {
+        // Logout always ends the session fully, regardless of Remember me —
+        // Remember me persists login across browser restarts, not past an explicit logout.
         sessionStorage.clear();
+        localStorage.removeItem(TOKEN_KEY);
         window.location.href = "/pages/index.html";
     });
 
@@ -76,6 +117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         try {
             const response = await fetch(`${API_BASE}/user/${userId}`, {
                 method: "DELETE",
+                headers: { "Authorization": `Bearer ${token}` },
             });
 
             if (!response.ok) {
@@ -86,6 +128,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             sessionStorage.clear();
+            localStorage.removeItem(TOKEN_KEY);
+            localStorage.removeItem("rememberedEmail");
             window.location.href = "/pages/index.html";
 
         } catch (err) {

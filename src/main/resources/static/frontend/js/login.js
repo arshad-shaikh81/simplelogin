@@ -2,6 +2,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const API_BASE = "https://simplelogin-t22x.onrender.com/api";
     const REMEMBER_KEY = "rememberedEmail";
+    const TOKEN_KEY = "authToken";
+
+    // ---- If a valid token already exists (remembered session), skip straight to dashboard ----
+    const existingToken = localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY);
+    if (existingToken && !isTokenExpired(existingToken)) {
+        window.location.href = "/pages/dashboard.html";
+        return;
+    }
+
+    // Reads the JWT's own expiry (exp claim) client-side, just to avoid bothering
+    // the server with a request we already know will fail. The server still
+    // re-validates the token on every real request — this is a UX shortcut only.
+    function isTokenExpired(token) {
+        try {
+            const payload = JSON.parse(atob(token.split(".")[1]));
+            if (!payload.exp) return false;
+            return Date.now() >= payload.exp * 1000;
+        } catch {
+            return true; // malformed token, treat as expired/invalid
+        }
+    }
 
     const form = document.getElementById("loginForm");
     const emailInput = document.getElementById("email");
@@ -14,10 +35,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const rememberMeInput = document.getElementById("rememberMe");
 
     // Show/hide password (does not clear the input)
+    function setPasswordToggleIcon(button, isVisible) {
+        const eyeIcon = button.querySelector(".icon-eye");
+        const eyeOffIcon = button.querySelector(".icon-eye-off");
+        // Convention: open eye = "hidden, click to reveal", crossed eye = "visible, click to hide"
+        eyeIcon.hidden = isVisible;
+        eyeOffIcon.hidden = !isVisible;
+    }
+
     togglePassword.addEventListener("click", () => {
-        const isHidden = passwordInput.type === "password";
-        passwordInput.type = isHidden ? "text" : "password";
-        togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        const willBeVisible = passwordInput.type === "password";
+        passwordInput.type = willBeVisible ? "text" : "password";
+        togglePassword.setAttribute("aria-label", willBeVisible ? "Hide password" : "Show password");
+        setPasswordToggleIcon(togglePassword, willBeVisible);
     });
 
     // ---- Prefill email: prioritize a just-created signup account over an old "remembered" one ----
@@ -126,10 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000);
 
         try {
+            const remember = rememberMeInput.checked;
+
             const response = await fetch(`${API_BASE}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, password, rememberMe: remember }),
             });
 
             clearTimeout(wakeupTimer);
@@ -143,11 +175,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // ---- Remember Me: persist or clear the email ----
-            if (rememberMeInput.checked) {
+            // ---- Remember Me: persist (or clear) the email AND the auth token ----
+            // Checked  -> localStorage: survives closing the browser, so the token
+            //             on next visit lets us skip straight back to the dashboard.
+            // Unchecked -> sessionStorage: cleared the moment the tab closes, same
+            //             as before — a real "log in every time" session.
+            if (remember) {
                 localStorage.setItem(REMEMBER_KEY, email);
+                localStorage.setItem(TOKEN_KEY, data.token);
+                sessionStorage.removeItem(TOKEN_KEY);
             } else {
                 localStorage.removeItem(REMEMBER_KEY);
+                localStorage.removeItem(TOKEN_KEY);
+                sessionStorage.setItem(TOKEN_KEY, data.token);
             }
 
             formStatus.textContent = "Login Successful! Welcome back.";

@@ -12,6 +12,10 @@ public class LoginRequest {
     @NotBlank(message = "Password is required")
     private String password;
 
+    // Optional: controls how long the issued token stays valid.
+    // Defaults to false (short-lived, session-style) when omitted.
+    private boolean rememberMe;
+
     // ----- Constructors -----
     public LoginRequest() {
     }
@@ -31,5 +35,13 @@ public class LoginRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean isRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(boolean rememberMe) {
+        this.rememberMe = rememberMe;
     }
 }

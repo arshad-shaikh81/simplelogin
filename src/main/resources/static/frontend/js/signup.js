@@ -17,17 +17,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const termsInput = document.getElementById("termsAccepted");
 
     // Show/hide password
+    function setPasswordToggleIcon(button, isVisible) {
+        const eyeIcon = button.querySelector(".icon-eye");
+        const eyeOffIcon = button.querySelector(".icon-eye-off");
+        // Convention: open eye = "hidden, click to reveal", crossed eye = "visible, click to hide"
+        eyeIcon.hidden = isVisible;
+        eyeOffIcon.hidden = !isVisible;
+    }
+
     togglePassword.addEventListener("click", () => {
-        const isHidden = passwordInput.type === "password";
-        passwordInput.type = isHidden ? "text" : "password";
-        togglePassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        const willBeVisible = passwordInput.type === "password";
+        passwordInput.type = willBeVisible ? "text" : "password";
+        togglePassword.setAttribute("aria-label", willBeVisible ? "Hide password" : "Show password");
+        setPasswordToggleIcon(togglePassword, willBeVisible);
     });
 
     // Show/hide confirm password
     toggleConfirmPassword.addEventListener("click", () => {
-        const isHidden = confirmPasswordInput.type === "password";
-        confirmPasswordInput.type = isHidden ? "text" : "password";
-        toggleConfirmPassword.setAttribute("aria-label", isHidden ? "Hide password" : "Show password");
+        const willBeVisible = confirmPasswordInput.type === "password";
+        confirmPasswordInput.type = willBeVisible ? "text" : "password";
+        toggleConfirmPassword.setAttribute("aria-label", willBeVisible ? "Hide password" : "Show password");
+        setPasswordToggleIcon(toggleConfirmPassword, willBeVisible);
     });
 
     // Password strength: length + character variety
@@ -151,8 +161,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         passwordInput.type = "password";
         togglePassword.setAttribute("aria-label", "Show password");
+        setPasswordToggleIcon(togglePassword, false);
         confirmPasswordInput.type = "password";
         toggleConfirmPassword.setAttribute("aria-label", "Show password");
+        setPasswordToggleIcon(toggleConfirmPassword, false);
 
         updateSubmitState();
     }

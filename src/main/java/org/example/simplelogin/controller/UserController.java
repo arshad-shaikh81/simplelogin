@@ -3,10 +3,12 @@ package org.example.simplelogin.controller;
 import org.example.simplelogin.dto.LoginRequest;
 import org.example.simplelogin.dto.SignupRequest;
 import org.example.simplelogin.entity.User;
+import org.example.simplelogin.security.JwtService;
 import org.example.simplelogin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
@@ -18,10 +20,12 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtService jwtService) {
         this.userService = userService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/signup")
@@ -48,9 +52,13 @@ public class UserController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         try {
             User user = userService.loginUser(request);
-            Map<String, Object> response = new HashMap<>();
 
+            String token = jwtService.generateToken(user.getId(), user.getEmail(), request.isRememberMe());
+
+            Map<String, Object> response = new HashMap<>();
             response.put("message", "Login successful");
+            response.put("token", token);
+            response.put("rememberMe", request.isRememberMe());
             response.put("userId", user.getId());
             response.put("name", user.getName());
             response.put("email", user.getEmail());
@@ -66,8 +74,15 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable Long id) {
+    public ResponseEntity<?> getUser(@PathVariable Long id, Authentication authentication) {
         try {
+            Long authenticatedUserId = (Long) authentication.getPrincipal();
+            if (!authenticatedUserId.equals(id)) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "You are not allowed to view this account");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+            }
+
             User user = userService.getUserById(id);
 
             Map<String, Object> response = new HashMap<>();
@@ -104,8 +119,15 @@ public class UserController {
         }
     }
     @DeleteMapping("/user/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUser(@PathVariable Long id, Authentication authentication) {
         try {
+            Long authenticatedUserId = (Long) authentication.getPrincipal();
+            if (!authenticatedUserId.equals(id)) {
+                Map<String, String> error = new HashMap<>();
+                error.put("message", "You are not allowed to delete this account");
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+            }
+
             userService.deleteUser(id);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Account deleted successfully");
