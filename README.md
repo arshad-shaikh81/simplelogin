@@ -54,7 +54,7 @@ src/main/java/org/example/simplelogin/
 ├── repository/
 │   └── UserRepository.java         # extends JpaRepository
 ├── service/
-│   └── UserService.java            # business logic: register, login, delete, age validation
+│   └── UserService.java            # business logic: register, login, delete, age validation.
 └── SimpleloginApplication.java
 
 src/main/resources/static/frontend/
